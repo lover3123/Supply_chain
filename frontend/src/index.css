@@ -25,3 +25,13 @@ body {
   width: 100%;
   height: 100vh;
 }
+
+.hub-marker { position: relative; width: 24px; height: 24px; display: grid; place-items: center; }
+.hub-marker__pulse { position: absolute; inset: -8px; border-radius: 9999px; background: rgba(53, 211, 154, .36); animation: hub-ping 1.8s ease-out infinite; }
+.hub-marker__core { position: relative; z-index: 1; display: grid; width: 24px; height: 24px; place-items: center; border: 2px solid #f8fafc; border-radius: 9999px; background: #35d39a; color: #052e24; font-size: 13px; box-shadow: 0 2px 10px rgba(0,0,0,.55); }
+.tower-label { margin-left: 4px; color: #f8fafc; font-size: 10px; font-weight: 700; white-space: nowrap; text-shadow: 0 1px 3px #000; }
+.rider-marker { display: grid; width: 20px; height: 20px; place-items: center; border: 2px solid #f8fafc; border-radius: 9999px; background: #38bdf8; color: #082f49; box-shadow: 0 2px 10px rgba(0,0,0,.55); }
+.rider-marker__arrow { transform: rotate(-35deg); font-size: 12px; }
+.speed-badge, .hazard-callout { display: inline-block; border: 1px solid rgba(251, 191, 36, .7); border-radius: 6px; background: rgba(15, 23, 42, .94); padding: 3px 6px; color: #fef3c7; font-size: 10px; font-weight: 700; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.55); }
+.hazard-callout { border-color: rgba(251, 146, 60, .9); color: #ffedd5; }
+@keyframes hub-ping { 75%, 100% { opacity: 0; transform: scale(1.8); } }

@@ -62,6 +62,12 @@ export interface SelectedEntity {
   id: string;
 }
 
+export interface DisruptionSimulation {
+  rainfallMmHr: number;
+  sector: 'East Zone' | 'Whitefield' | 'Central Bengaluru';
+  gridlockedCorridors: string[];
+}
+
 interface AppState {
   shipments: Record<string, Shipment>;
   riders: Rider[];
@@ -69,12 +75,16 @@ interface AppState {
   trafficStates: TrafficState[];
   weather: WeatherData | null;
   selectedEntity: SelectedEntity | null;
+  simulation: DisruptionSimulation;
+  activeReroute: { shipmentId: string; status: 'pending' | 'approved' | 'overridden' | 'backup' } | null;
   updateShipments: (shipments: Shipment[]) => void;
   setRiders: (riders: Rider[]) => void;
   setDarkStores: (darkStores: DarkStore[]) => void;
   setTrafficStates: (trafficStates: TrafficState[]) => void;
   setWeather: (weather: WeatherData) => void;
   setSelectedEntity: (entity: SelectedEntity | null) => void;
+  setSimulation: (simulation: Partial<DisruptionSimulation>) => void;
+  setActiveReroute: (reroute: AppState['activeReroute']) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -84,6 +94,8 @@ export const useStore = create<AppState>((set) => ({
   trafficStates: [],
   weather: null,
   selectedEntity: null,
+  simulation: { rainfallMmHr: 18, sector: 'Whitefield', gridlockedCorridors: ['Outer Ring Road'] },
+  activeReroute: null,
   updateShipments: (newShipments) => set((state) => {
     const updated = { ...state.shipments };
     newShipments.forEach((shipment) => {
@@ -96,4 +108,7 @@ export const useStore = create<AppState>((set) => ({
   setTrafficStates: (trafficStates) => set({ trafficStates }),
   setWeather: (weather) => set({ weather }),
   setSelectedEntity: (selectedEntity) => set({ selectedEntity }),
+  setSimulation: (simulation) => set((state) => ({ simulation: { ...state.simulation, ...simulation } })),
+  setActiveReroute: (activeReroute) => set({ activeReroute }),
 }));
+
