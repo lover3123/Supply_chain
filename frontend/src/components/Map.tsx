@@ -1,15 +1,62 @@
-import React, { useMemo } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { useStore } from '../store/useStore';
 
-const INITIAL_VIEW_STATE = {
-  longitude: 10,
-  latitude: 20,
-  zoom: 1.5,
-};
+// const INITIAL_VIEW_STATE = {
+//   longitude: 10,
+//   latitude: 20,
+//   zoom: 1.5,
+// };
 
 export default function AppMap() {
   const shipmentsMap = useStore(state => state.shipments);
   const shipments = Object.values(shipmentsMap);
+  
+  // Zoom and pan state
+  const [zoom, setZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  
+  // Handle zoom with mouse wheel
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    const zoomSensitivity = 0.001;
+    const delta = -e.deltaY * zoomSensitivity;
+    const newZoom = Math.min(Math.max(zoom + delta, 0.5), 5);
+    setZoom(newZoom);
+  }, [zoom]);
+  
+  // Handle mouse down for dragging
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - panOffset.x, y: e.clientY - panOffset.y });
+  }, [panOffset]);
+  
+  // Handle mouse move for dragging
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const newX = e.clientX - dragStart.x;
+    const newY = e.clientY - dragStart.y;
+    setPanOffset({ x: newX, y: newY });
+  }, [isDragging, dragStart]);
+  
+  // Handle mouse up to stop dragging
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+  
+  // Handle mouse leave to stop dragging
+  const handleMouseLeave = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+  
+  // Reset view to initial state
+  const handleResetView = () => {
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+  };
   
   // Group shipments by route to draw paths
   const routePaths = useMemo(() => {
@@ -102,20 +149,74 @@ export default function AppMap() {
   }, [shipments]);
 
   return (
-    <div className="absolute inset-0 z-0 bg-slate-900 overflow-hidden">
-      {/* Simple world map background */}
+    <div 
+      ref={mapContainerRef}
+      className="absolute inset-0 z-0 bg-slate-900 overflow-hidden cursor-grab active:cursor-grabbing"
+      onWheel={handleWheel}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Map content with zoom and pan transform */}
       <div 
-        className="w-full h-full opacity-30"
+        className="w-full h-full relative"
         style={{
-          backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoom})`,
+          transformOrigin: 'center center',
+          transition: isDragging ? 'none' : 'transform 0.1s ease-out',
         }}
-      />
-      {/* Route paths */}
-      {routePaths}
-      {/* Shipment markers */}
-      {markers}
+      >
+        {/* Simple world map background */}
+        <div 
+          className="w-full h-full opacity-30"
+          style={{
+            backgroundImage: 'url("https://upload.wikimedia.org/wikipedia/commons/8/80/World_map_-_low_resolution.svg")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        />
+        {/* Route paths */}
+        {routePaths}
+        {/* Shipment markers */}
+        {markers}
+      </div>
+      
+      {/* Zoom controls */}
+      <div className="absolute top-4 right-4 flex flex-col gap-2">
+        <button
+          onClick={() => setZoom(prev => Math.min(prev + 0.5, 5))}
+          className="bg-slate-800/80 backdrop-blur-md rounded-lg p-2 text-white hover:bg-slate-700 transition-colors shadow-lg"
+          title="Zoom In"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </button>
+        <button
+          onClick={() => setZoom(prev => Math.max(prev - 0.5, 0.5))}
+          className="bg-slate-800/80 backdrop-blur-md rounded-lg p-2 text-white hover:bg-slate-700 transition-colors shadow-lg"
+          title="Zoom Out"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+          </svg>
+        </button>
+        <button
+          onClick={handleResetView}
+          className="bg-slate-800/80 backdrop-blur-md rounded-lg p-2 text-white hover:bg-slate-700 transition-colors shadow-lg"
+          title="Reset View"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </button>
+      </div>
+      
+      {/* Zoom level indicator */}
+      <div className="absolute bottom-4 left-4 bg-slate-800/80 backdrop-blur-md rounded-lg px-3 py-2 text-xs text-white">
+        <span className="font-semibold">Zoom:</span> {(zoom * 100).toFixed(0)}%
+      </div>
       
       {/* Legend */}
       <div className="absolute bottom-4 right-4 bg-slate-800/80 backdrop-blur-md rounded-lg p-3 text-xs text-white">
