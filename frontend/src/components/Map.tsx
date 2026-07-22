@@ -143,7 +143,7 @@ function WeatherWidget({ weather }: { weather: WeatherData | null }) {
   return (
     <div 
       className={`${alertColors[weather.alertLevel]} backdrop-blur-md rounded-lg p-3 text-white text-xs shadow-lg`}
-      style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1000, minWidth: '200px' }}
+      style={{ position: 'fixed', top: '12px', left: '12px', zIndex: 10000, minWidth: '200px', pointerEvents: 'auto' }}
     >
       <div className="font-bold mb-2 flex items-center gap-2">
         <span>🌤️</span> Bengaluru Weather

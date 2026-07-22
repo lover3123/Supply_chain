@@ -50,7 +50,7 @@ function WeatherWidget({ weather }: { weather: WeatherData | null }) {
   if (!weather) return null;
   const alertColors = { normal: 'bg-green-500', warning: 'bg-yellow-500', severe: 'bg-red-500' };
   return (
-    <div className={`${alertColors[weather.alertLevel]} backdrop-blur-md rounded-lg p-3 text-white text-xs shadow-lg`} style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1000, minWidth: '200px' }}>
+    <div className={`${alertColors[weather.alertLevel]} backdrop-blur-md rounded-lg p-3 text-white text-xs shadow-lg`} style={{ position: 'fixed', top: '12px', left: '12px', zIndex: 10000, minWidth: '200px', pointerEvents: 'auto' }}>
       <div className="font-bold mb-2 flex items-center gap-2"><span>🌤️</span> Bengaluru Weather</div>
       <div className="grid grid-cols-2 gap-2">
         <div><div className="opacity-80">Temperature</div><div className="font-bold">{Math.round(weather.temperature)}°C</div></div>
