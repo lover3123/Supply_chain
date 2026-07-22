@@ -5,7 +5,7 @@ import { useStore } from './store/useStore';
 
 function App() {
   const updateShipments = useStore(state => state.updateShipments);
-
+  
   useEffect(() => {
     // Connect to WebSocket
     const ws = new WebSocket('ws://localhost:8000/ws/live-tracking');
@@ -23,6 +23,7 @@ function App() {
 
     ws.onopen = () => console.log("WebSocket connected");
     ws.onclose = () => console.log("WebSocket disconnected");
+    ws.onerror = (error) => console.error("WebSocket error:", error);
 
     return () => {
       ws.close();
