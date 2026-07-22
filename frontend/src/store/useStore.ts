@@ -23,18 +23,77 @@ export interface Shipment {
   }>;
 }
 
+export interface Rider {
+  id: string;
+  name: string;
+  status: 'available' | 'busy' | 'offline';
+  currentLocation: Location;
+  vehicleType: string;
+  rating: number;
+  deliveriesToday: number;
+}
+
+export interface DarkStore {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  radius: number;
+  activeRiders: number;
+}
+
+export interface TrafficState {
+  zoneId: string;
+  congestionLevel: number;
+  avgSpeed: number;
+  incident?: string;
+}
+
+export interface WeatherData {
+  temperature: number;
+  humidity: number;
+  rainfall: number;
+  windSpeed: number;
+  alertLevel: 'normal' | 'warning' | 'severe';
+}
+
+export interface SelectedEntity {
+  type: 'rider' | 'darkstore' | 'shipment';
+  id: string;
+}
+
 interface AppState {
   shipments: Record<string, Shipment>;
+  riders: Rider[];
+  darkStores: DarkStore[];
+  trafficStates: TrafficState[];
+  weather: WeatherData | null;
+  selectedEntity: SelectedEntity | null;
   updateShipments: (shipments: Shipment[]) => void;
+  setRiders: (riders: Rider[]) => void;
+  setDarkStores: (darkStores: DarkStore[]) => void;
+  setTrafficStates: (trafficStates: TrafficState[]) => void;
+  setWeather: (weather: WeatherData) => void;
+  setSelectedEntity: (entity: SelectedEntity | null) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
   shipments: {},
+  riders: [],
+  darkStores: [],
+  trafficStates: [],
+  weather: null,
+  selectedEntity: null,
   updateShipments: (newShipments) => set((state) => {
     const updated = { ...state.shipments };
-    newShipments.forEach(s => {
-      updated[s.shipment_id] = s;
+    newShipments.forEach((shipment) => {
+      updated[shipment.shipment_id] = shipment;
     });
     return { shipments: updated };
   }),
+  setRiders: (riders) => set({ riders }),
+  setDarkStores: (darkStores) => set({ darkStores }),
+  setTrafficStates: (trafficStates) => set({ trafficStates }),
+  setWeather: (weather) => set({ weather }),
+  setSelectedEntity: (selectedEntity) => set({ selectedEntity }),
 }));
