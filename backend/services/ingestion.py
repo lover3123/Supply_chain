@@ -2,7 +2,7 @@ import asyncio
 import random
 import uuid
 from datetime import datetime, timezone
-from models.domain import Shipment, Location, CurrentState, Context, RouteSegment, TelemetryHistory
+from ..models.domain import Shipment, Location, CurrentState, Context, RouteSegment, TelemetryHistory
 
 # Global state for MVP
 ACTIVE_SHIPMENTS = {}

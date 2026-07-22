@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.ensemble import IsolationForest
-from models.domain import Shipment
+from ..models.domain import Shipment
 
 class AnomalyDetector:
     def __init__(self):

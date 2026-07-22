@@ -1,4 +1,4 @@
-from models.domain import Shipment, RouteDecision, RouteDecisionAction, RouteSegment
+from ..models.domain import Shipment, RouteDecision, RouteDecisionAction, RouteSegment
 
 class RouteOptimizer:
     def __init__(self):

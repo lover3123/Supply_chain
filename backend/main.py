@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import json
 
-from services.ingestion import generate_initial_shipments, simulate_telemetry_stream, ACTIVE_SHIPMENTS
-from services.anomaly_detector import AnomalyDetector
-from services.route_optimizer import RouteOptimizer
+from .services.ingestion import generate_initial_shipments, simulate_telemetry_stream, ACTIVE_SHIPMENTS
+from .services.anomaly_detector import AnomalyDetector
+from .services.route_optimizer import RouteOptimizer
 
 app = FastAPI(title="SCRE API", version="1.0")
 
