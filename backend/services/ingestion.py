@@ -21,6 +21,15 @@ ROUTES = [
     [
         RouteSegment(from_node="Hong Kong", to_node="Anchorage", mode="air", carrier="FedEx", estimated_duration_hours=10),
         RouteSegment(from_node="Anchorage", to_node="Memphis", mode="air", carrier="FedEx", estimated_duration_hours=6)
+    ],
+    # Road Routes
+    [
+        RouteSegment(from_node="Rotterdam", to_node="Berlin", mode="road", carrier="DHL", estimated_duration_hours=8),
+        RouteSegment(from_node="Berlin", to_node="Warsaw", mode="road", carrier="DHL", estimated_duration_hours=7)
+    ],
+    [
+        RouteSegment(from_node="LA/Long Beach", to_node="Phoenix", mode="road", carrier="UPS", estimated_duration_hours=6),
+        RouteSegment(from_node="Phoenix", to_node="Dallas", mode="road", carrier="UPS", estimated_duration_hours=12)
     ]
 ]
 
@@ -35,7 +44,11 @@ CITIES = {
     "Anchorage": {"lat": 61.2181, "lng": -149.9003},
     "Memphis": {"lat": 35.1495, "lng": -90.0490},
     "Tokyo": {"lat": 35.6762, "lng": 139.6503},
-    "Dubai": {"lat": 25.2048, "lng": 55.2708}
+    "Dubai": {"lat": 25.2048, "lng": 55.2708},
+    "Berlin": {"lat": 52.5200, "lng": 13.4050},
+    "Warsaw": {"lat": 52.2297, "lng": 21.0122},
+    "Phoenix": {"lat": 33.4484, "lng": -112.0740},
+    "Dallas": {"lat": 32.7767, "lng": -96.7970}
 }
 
 def generate_initial_shipments(num_shipments=100):
