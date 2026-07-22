@@ -18,6 +18,9 @@ export interface Shipment {
   };
   anomaly_score?: number;
   disruption_type?: string;
+  route?: Array<{
+    end_location?: Location;
+  }>;
 }
 
 interface AppState {
